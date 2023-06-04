@@ -1,4 +1,4 @@
-# Mercado Livre Search Scrapper by rafael_dsa
+# Mercado Livre Search Scrapper by raf4
 
 from bs4 import BeautifulSoup
 import requests
