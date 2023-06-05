@@ -47,6 +47,7 @@ def clusterize_products(products):
 ### função recursiva
 
 # definição de variáveis do request
+
 def Main():
     count = 0
     usr_input = user_input()
@@ -56,25 +57,23 @@ def Main():
     products = []
 
  # Inicializar o WebDriver
+
     driver = webdriver.Chrome()
 
 #request
+
     for x in range(0, num_loop):
         driver = webdriver.Chrome()
         driver.get('https://lista.mercadolivre.com.br/'+usr_input+'_Desde_'+pages_increment[x]+'_DisplayType_LF')
         soup = BeautifulSoup(driver.page_source, "html.parser")
 
 #scrapping
+
         for item_shop in soup.find_all('li', class_="ui-search-layout__item shops__layout-item"):
             if item_shop.find('h2', class_="ui-search-item__title shops__item-title") == None:
                 name_item = 'Sem nome'
             else:
                 name_item = item_shop.find('h2', class_="ui-search-item__title shops__item-title").text
-
-            if item_shop.find('span', class_="price-tag-fraction") == None:
-                before_price_item = 'Sem preço'
-            else:
-                before_price_item = item_shop.find('span', class_="price-tag-fraction").text
 
             if item_shop.find('span', class_="price-tag-amount") == None:
                 price_item = 'Sem preço'
@@ -97,67 +96,30 @@ def Main():
                     seller = seller_element.get_attribute('href').split('/')[-1]
                 else:
                     seller = 'Sem vendedor'
-
-            sales = item_shop.find('div', class_="item__condition")
-
-            if item_shop.find('span', class_="ui-search-item__group__element shops__items-group-details ui-search-installments ui-search-color--LIGHT_GREEN") == None:
-                installments = 'Não divide no cartão'
-            else:
-                installments = item_shop.find('span', class_="ui-search-item__group__element shops__items-group-details ui-search-installments ui-search-color--LIGHT_GREEN").text
-
-            if (item_shop.find('span', class_="price__decimals") == None):
-                price_d_item = '00'
-            else:
-                price_d_item = item_shop.find('span', class_="price__decimals").text
-
-            if item_shop.find('p', class_="stack-item-info item--has-fulfillment") != None:
-                delivery = (item_shop.find('p', class_="stack-item-info item--has-fulfillment").text).replace(' ', '', 1)
-            elif item_shop.find('p', class_="stack-item-info ") == None:
-                delivery = 'Combinar com o vendedor'
-            else:
-                delivery = (item_shop.find('p', class_="stack-item-info ").text).replace(' ', '', 1)
-
-            if (item_shop.find('span', class_="item-installments-interest") == None):
-                interest = 'com juros'
-            else:
-                interest = (item_shop.find('span', class_="item-installments-interest").text).replace(' ', '', 1)
-
-            if (item_shop.find('div', class_="item__condition") == None):
-                sales_2 = ['0 vendidos', 'Sem Localização']
-            elif ' - ' not in (item_shop.find('div', class_="item__condition").text):
-                sales_2 = ['0 vendidos', item_shop.find('div', class_="item__condition").text]
-            elif item_shop.find('p', class_="stack-item-info item__free-shipping-disabled") != None:
-                if item_shop.find('p', class_="stack-item-info item__free-shipping-disabled").text == ' Envio para todo o país ':
-                    sales = (item_shop.find('div', class_="item__condition").text).replace(' ', '', 1)
-                    sales_2 = sales.split("-")
-                else:
-                    sales_2 = ['0', item_shop.find('p', class_="stack-item-info item__free-shipping-disabled").text]
-            else:
-                sales = (item_shop.find('div', class_="item__condition").text).replace(' ', '', 1)
-                sales_2 = sales.split("-")
-
+            
             count += 1
-            sales_2[1] = sales_2[1].replace(' ', '', 1)
+            products.append((name_item, price_item, seller, link))
 
-            products.append((name_item, before_price_item, price_item, price_d_item, installments, interest, delivery, sales_2[0], sales_2[1], link, seller))
     # Fechar o WebDriver
     driver.quit()
+
+    #clusterizar
     clusters = clusterize_products(products)
 
-    for i, (name, before_price, price, price_d, installments, interest, delivery, sales, location, link, seller) in enumerate(products):
+    for i, (name, price, seller, link) in enumerate(products):
         cluster_number = 0
         for cluster in clusters:
             if name in cluster:
                 cluster_number = clusters.index(cluster) + 1
                 break
 
-        csv_writer.writerow([cluster_number, name, before_price, price, price_d, installments, interest, delivery, sales, location, link, seller])
+        csv_writer.writerow([cluster_number, name, price, seller, link])
 
     print('Foram extraídos ' + str(count) + ' anúncios.')
     csv_file.close()
 
 def clusterize_products(products):
-    names = [name for name, _, _, _, _, _, _, _, _, _, _ in products]
+    names = [name for name, _, _, _, in products]
     clusters = []
     for name in names:
         cluster_found = False
