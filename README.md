@@ -1,9 +1,9 @@
 ## PROJECTS
 
-# Mercado Livre Search Scrapper to compare prices and sellers
+# Mercado Livre Search Scrapper
 
 - request on mercadolivre.com.br with 2 inputs (search and pages)
-- jaccard cluster to scrap same products with different descriptions (text similarity)
+- jaccard cluster to scrap same products with different names and prices (text similarity)
 - webdriver google chrome to scrap all sellers
 
 # Analytics for Pricing
