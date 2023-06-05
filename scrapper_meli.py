@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 # abre o arquivo csv em branco
 csv_file = open('data.csv', 'a', newline='', encoding='utf_8_sig')
 csv_writer = csv.writer(csv_file)
-csv_writer.writerow(['Cluster', 'Anúncio', 'Preço Antes', 'Preço Atual', 'Parcela', 'Juros', 'Frete', 'Vendas', 'Localização', 'Link', 'Vendedor'])
+csv_writer.writerow(['Cluster', 'Anúncio', 'Preço Atual', 'Vendedor', 'Link'])
 
 # definição da variável de pesquisa - input 1
 def user_input():    
@@ -63,8 +63,6 @@ def Main():
         driver = webdriver.Chrome()
         driver.get('https://lista.mercadolivre.com.br/'+usr_input+'_Desde_'+pages_increment[x]+'_DisplayType_LF')
         soup = BeautifulSoup(driver.page_source, "html.parser")
-
-
 
 #scrapping
         for item_shop in soup.find_all('li', class_="ui-search-layout__item shops__layout-item"):
@@ -165,7 +163,7 @@ def clusterize_products(products):
         cluster_found = False
         for cluster in clusters:
             for item in cluster:
-                if jaccard_similarity(name, item) >= 0.5:
+                if jaccard_similarity(name, item) >= 0.8:
                     cluster.append(name)
                     cluster_found = True
                     break
