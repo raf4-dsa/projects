@@ -3,8 +3,8 @@
 # Mercado Livre Search Scrapper
 
 - request on mercadolivre.com.br with 2 inputs (search and pages)
-- jaccard cluster to scrap same products with different names and prices (text similarity)
-- webdriver google chrome to scrap all sellers
+- jaccard cluster to scrap same products with different names and prices (text similarity from sklearn)
+- selenium to drive/scrap all sellers
 
 # Analytics for Pricing
 
