@@ -8,7 +8,7 @@ import numpy as np #manipulações estatísitcas
 
 # SNA - Gerando grafo a partir de um csv
 
-df = pd.read_csv('input_rede_ldm.csv', sep = ";", header = 0, names = ["codproduto", "source", "target", "weight", "last_update"]) #importa o arquivo e nomeia as colunas
+df = pd.read_csv('input_rede.csv', sep = ";", header = 0, names = ["codproduto", "source", "target", "weight", "last_update"]) #importa o arquivo e nomeia as colunas
 g = ig.Graph(directed=True) #gera um grafo nulo
 vertices = list(set(df['source']) | set(df['target'])) #gera lista de nós
 g.add_vertices(vertices) #adiciona lista de nós no grafo
